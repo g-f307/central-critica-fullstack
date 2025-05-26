@@ -23,7 +23,7 @@ const AboutPage = () => {
                     <div className="bg-gray-100 dark:bg-dark-card p-6 rounded-lg">
                         <i className="fas fa-heart text-4xl text-purple-700 dark:text-dark-cyan mb-4"></i>
                         <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-dark-text-primary">Valores</h3>
-                        <p className="text-gray-600 dark:text-dark-text-secondary">Respeito, paixão pela cultura e incentivo à diversidade de vozes.</p>
+                        <p className="text-gray-600 dark:text-dark-text-secondary">Respeito, paixão pela cultura e incentivo à diversidade de vozes de quem ama opinar.</p>
                     </div>
                 </div>
             </div>
