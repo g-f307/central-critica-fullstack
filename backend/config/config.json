@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "",
+    "password": "",
+    "database": "central_critica_dev.sqlite",
+    "host": "127.0.0.1",
+    "dialect": "sqlite",
+    "storage": "./central_critica_dev.sqlite" 
+  },
+  "test": {
+    "username": "",
+    "password": "",
+    "database": "central_critica_test.sqlite",
+    "host": "127.0.0.1",
+    "dialect": "sqlite",
+    "storage": "./central_critica_test.sqlite"
+  },
+  "production": {
+    "username": "",
+    "password": "",
+    "database": "central_critica_prod.sqlite",
+    "host": "127.0.0.1",
+    "dialect": "sqlite",
+    "storage": "./central_critica_prod.sqlite"
+  }
+}
