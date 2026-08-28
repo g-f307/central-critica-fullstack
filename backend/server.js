@@ -12,10 +12,15 @@ import articleRoutes from './routes/articles.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+if (process.env.NODE_ENV === 'production' && (!process.env.JWT_SECRET || !process.env.SESSION_SECRET)) {
+  throw new Error('JWT_SECRET e SESSION_SECRET são obrigatórios em produção.');
+}
 
 // Middlewares
 app.use(cors({
-  origin: 'http://localhost:5173', // Permite requisições do seu frontend
+  origin: FRONTEND_URL,
   credentials: true, // Necessário para sessões OAuth
 }));
 app.use(express.json()); // Essencial para o Express interpretar o corpo das requisições como JSON
@@ -23,11 +28,13 @@ app.use(express.json()); // Essencial para o Express interpretar o corpo das req
 // Configuração de Sessão para o Passport
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'umSegredoParaASessaoTemporaria', // Use uma variável de ambiente para isso
+    secret: process.env.SESSION_SECRET || 'desenvolvimento-local-apenas',
     resave: false,
     saveUninitialized: false,
     cookie: {
         maxAge: 24 * 60 * 60 * 1000, // 24 horas
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     }
   })
 );

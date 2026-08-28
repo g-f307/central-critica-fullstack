@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { randomBytes } from 'node:crypto';
 import db from '../models/index.js';
 
 const { User } = db;
@@ -36,9 +37,9 @@ passport.use(
             firstName: profile.name.givenName || 'Usuário',
             lastName: profile.name.familyName || 'Google',
             email,
-            // A senha não é necessária para login social, mas o modelo a exige.
-            // Vamos gerar uma senha aleatória segura que não será usada.
-            password: `<span class="math-inline">\{Math\.random\(\)\.toString\(36\)\.slice\(\-8\)\}</span>{Date.now()}`,
+            // O modelo atual exige senha; para contas OAuth usamos um valor
+            // criptograficamente aleatório, que nunca é exposto ao usuário.
+            password: randomBytes(32).toString('hex'),
             profileImageUrl: profile.photos && profile.photos[0] ? profile.photos[0].value : null,
           });
           return done(null, newUser);

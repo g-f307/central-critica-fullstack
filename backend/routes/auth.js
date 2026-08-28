@@ -6,6 +6,13 @@ import db from '../models/index.js';
 
 const router = express.Router();
 const { User } = db; 
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const getJwtSecret = () => {
+  if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET é obrigatório em produção.');
+  }
+  return process.env.JWT_SECRET || 'desenvolvimento-local-apenas';
+};
 
 // ROTA DE REGISTRO
 router.post('/register', async (req, res) => {
@@ -85,10 +92,7 @@ router.post('/login', async (req, res) => {
       },
     };
 
-    const jwtSecret = process.env.JWT_SECRET || 'seuSegredoSuperSecretoTemporarioPadrao'; 
-    if (jwtSecret === 'seuSegredoSuperSecretoTemporarioPadrao') {
-        console.warn("AVISO: Usando chave JWT secreta padrão. Defina JWT_SECRET no seu arquivo .env para produção!");
-    }
+    const jwtSecret = getJwtSecret();
     
     jwt.sign(
       payload,
@@ -128,7 +132,7 @@ router.get('/google', passport.authenticate('google', {
 // O Google redirecionará o usuário para cá após o login na tela dele
 router.get('/google/callback', 
   passport.authenticate('google', { 
-    failureRedirect: 'http://localhost:5173/auth?error=google-login-failed', // Redireciona para o frontend em caso de falha
+  failureRedirect: `${FRONTEND_URL}/auth?error=google-login-failed`,
     session: false // Não estamos usando sessões persistentes, vamos usar JWT
   }),
   (req, res) => {
@@ -145,12 +149,12 @@ router.get('/google/callback',
       },
     };
 
-    const jwtSecret = process.env.JWT_SECRET || 'seuSegredoSuperSecretoTemporarioPadrao';
+    const jwtSecret = getJwtSecret();
     const token = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
     
     // Redireciona de volta para o frontend com o token
     // O frontend terá uma página/lógica para capturar este token e logar o usuário
-    res.redirect(`http://localhost:5173/auth/callback?token=${token}`);
+    res.redirect(`${FRONTEND_URL}/auth/callback?token=${encodeURIComponent(token)}`);
   }
 );
 

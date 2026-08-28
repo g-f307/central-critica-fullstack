@@ -17,7 +17,10 @@ export default (req, res, next) => {
   const token = parts[1];
 
   try {
-    const jwtSecret = process.env.JWT_SECRET || 'seuSegredoSuperSecretoTemporarioPadrao';
+    if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET é obrigatório em produção.');
+    }
+    const jwtSecret = process.env.JWT_SECRET || 'desenvolvimento-local-apenas';
     const decoded = jwt.verify(token, jwtSecret);
 
     req.user = decoded.user; // Adiciona os dados do usuário decodificados ao objeto req
